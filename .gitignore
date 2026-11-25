@@ -1,0 +1,11 @@
+# EN: Installed packages (re-created with "npm install").
+# AR: الحزم المثبتة (يُعاد إنشاؤها بالأمر npm install).
+node_modules/
+
+# EN: Compiled output (re-created with "npm run build").
+# AR: ملفات الترجمة الناتجة (يُعاد إنشاؤها بالأمر npm run build).
+dist/
+
+# EN: Real local settings and secrets - NEVER commit.
+# AR: الإعدادات المحلية الحقيقية والأسرار - لا تُرفع أبداً.
+.env

@@ -1,0 +1,67 @@
+INSERT INTO books (title, author, genre, available) VALUES
+  ('Clean Code',                            'Robert C. Martin',             'Programming', TRUE),   -- 1
+  ('The Pragmatic Programmer',              'Andrew Hunt & David Thomas',   'Programming', TRUE),   -- 2
+  ('مقدمة ابن خلدون',                        'ابن خلدون',                     'History',     TRUE),   -- 3
+  ('Atomic Habits',                         'James Clear',                  'Self-help',   TRUE),   -- 4
+  ('Dune',                                  'Frank Herbert',                'Novel',       TRUE),   -- 5
+  ('1984',                                  'George Orwell',                'Novel',       TRUE),   -- 6
+  ('الأيام',                                 'طه حسين',                       'Biography',   TRUE),   -- 7
+  ('Sapiens',                               'Yuval Noah Harari',            'History',     TRUE),   -- 8
+  ('Rich Dad Poor Dad',                     'Robert Kiyosaki',              'Finance',     TRUE),   -- 9
+  ('Designing Data-Intensive Applications', 'Martin Kleppmann',             'Programming', FALSE),  -- 10
+  ('رجال في الشمس',                          'غسان كنفاني',                   'Novel',       TRUE),   -- 11
+  ('Deep Work',                             'Cal Newport',                  'Self-help',   TRUE);
+INSERT 0 12
+INSERT INTO players (username, email) VALUES
+  ('ahmed_reader', 'ahmed@example.com'),   -- 1
+  ('sara_books',   'sara@example.com'),    -- 2
+  ('omar_dev',     'omar@example.com'),    -- 3
+  ('layla_quiz',   'layla@example.com'),   -- 4
+  ('yusuf99',      'yusuf@example.com'),   -- 5
+  ('mona_k',       'mona@example.com');
+INSERT 0 6
+INSERT INTO questions (book_id, question_text, correct_answer, difficulty) VALUES
+  (1,  'According to Clean Code, how many things should a function do?', 'One thing', 'easy'),
+  (1,  'What does the "Boy Scout Rule" say?', 'Leave the code cleaner than you found it', 'medium'),
+  (2,  'What does DRY stand for?', 'Don''t Repeat Yourself', 'easy'),
+  (2,  'What is "rubber duck debugging"?', 'Explaining your code out loud to find the bug', 'medium'),
+  (3,  'ما المفهوم الذي يفسّر به ابن خلدون قيام الدول وسقوطها؟', 'العصبية', 'medium'),
+  (3,  'في أي قرن ميلادي كُتبت المقدمة؟', 'القرن الرابع عشر', 'hard'),
+  (4,  'What are the four laws of behavior change?', 'Make it obvious, attractive, easy and satisfying', 'medium'),
+  (4,  'How much better does the book suggest getting each day?', '1%', 'easy'),
+  (5,  'What is the name of the desert planet?', 'Arrakis', 'easy'),
+  (5,  'What is the most valuable substance on the planet called?', 'The spice (melange)', 'easy'),
+  (5,  'What are the native people of the desert planet called?', 'Fremen', 'medium'),
+  (6,  'Who is the leader of the Party?', 'Big Brother', 'easy'),
+  (6,  'What is the name of the Party''s official language?', 'Newspeak', 'medium'),
+  (6,  'Who is the main character?', 'Winston Smith', 'easy'),
+  (7,  'ما الذي فقده طه حسين في طفولته؟', 'البصر', 'easy'),
+  (7,  'في أي بلد أوروبي أكمل طه حسين دراسته؟', 'فرنسا', 'medium'),
+  (8,  'Which revolution, about 70,000 years ago, starts the story?', 'The Cognitive Revolution', 'medium'),
+  (9,  'According to the book, what does an asset do?', 'Puts money in your pocket', 'easy'),
+  (10, 'What are the three main concerns in chapter 1?', 'Reliability, scalability and maintainability', 'hard'),
+  (11, 'أين اختبأ الرجال لعبور الحدود؟', 'داخل خزان شاحنة مياه', 'medium'),
+  (11, 'إلى أي بلد كان الرجال يحاولون الوصول؟', 'الكويت', 'medium');
+INSERT 0 21
+INSERT INTO attempts (player_id, book_id, total_questions, score, attempted_at) VALUES
+  (1, 1,  2, 2, '2026-11-01 10:00+03'),
+  (1, 3,  2, 1, '2026-11-02 11:00+03'),
+  (1, 5,  3, 3, '2026-11-05 20:00+03'),
+  (1, 6,  3, 2, '2026-11-09 21:00+03'),
+  (2, 4,  2, 2, '2026-11-01 09:30+03'),
+  (2, 5,  3, 2, '2026-11-03 18:00+03'),
+  (2, 7,  2, 2, '2026-11-06 19:00+03'),
+  (2, 11, 2, 1, '2026-11-12 22:00+03'),
+  (3, 1,  2, 1, '2026-11-02 08:00+03'),
+  (3, 1,  2, 2, '2026-11-04 08:30+03'),   -- omar retried Clean Code | عمر أعاد المحاولة
+  (3, 2,  2, 2, '2026-11-07 13:00+03'),
+  (3, 10, 1, 0, '2026-11-10 14:00+03'),
+  (4, 5,  3, 1, '2026-11-03 16:00+03'),
+  (4, 6,  3, 3, '2026-11-08 17:00+03'),
+  (4, 8,  1, 1, '2026-11-11 12:00+03'),
+  (4, 9,  1, 1, '2026-11-13 12:30+03'),
+  (5, 3,  2, 2, '2026-11-04 15:00+03'),
+  (5, 7,  2, 1, '2026-11-09 10:00+03'),
+  (5, 11, 2, 2, '2026-11-14 11:00+03'),
+  (5, 5,  3, 2, '2026-11-15 20:30+03');
+INSERT 0 20

@@ -1,0 +1,114 @@
+SELECT setseed(0.42);
+ setseed 
+---------
+ 
+(1 row)
+
+INSERT INTO players (username, email)
+SELECT 'bulk_' || g, 'bulk' || g || '@example.com'
+FROM generate_series(1, 2000) AS g;
+INSERT 0 2000
+INSERT INTO attempts (player_id, book_id, total_questions, score, attempted_at)
+SELECT p.player_id,
+       1 + floor(random() * 12)::int,                         -- EN: book 1–12
+       3,
+       floor(random() * 4)::int,                              -- EN: score 0–3
+       timestamptz '2026-01-01' + random() * interval '320 days'
+FROM generate_series(1, 200000) AS g
+JOIN LATERAL (
+  SELECT player_id FROM players
+  WHERE username = 'bulk_' || (1 + (g % 2000))
+) p ON TRUE;
+INSERT 0 200000
+ANALYZE attempts;
+ANALYZE
+SELECT count(*) AS total_attempts FROM attempts;
+ total_attempts 
+----------------
+         200020
+(1 row)
+
+SELECT attempt_id, book_id, score, attempted_at
+FROM attempts
+WHERE player_id = (SELECT player_id FROM players WHERE username = 'bulk_1000')
+ORDER BY attempted_at DESC
+LIMIT 10;
+EXPLAIN ANALYZE
+SELECT attempt_id, book_id, score, attempted_at
+FROM attempts
+WHERE player_id = (SELECT player_id FROM players WHERE username = 'bulk_1000')
+ORDER BY attempted_at DESC
+LIMIT 10;
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3951.31..3952.45 rows=10 width=20) (actual time=6.796..9.019 rows=10.00 loops=1)
+   Buffers: shared hit=1482
+   InitPlan 1
+     ->  Index Scan using players_username_key on players  (cost=0.27..8.29 rows=1 width=4) (actual time=0.013..0.014 rows=1.00 loops=1)
+           Index Cond: ((username)::text = 'bulk_1000'::text)
+           Index Searches: 1
+           Buffers: shared hit=3
+   ->  Gather Merge  (cost=3943.02..3954.42 rows=100 width=20) (actual time=6.794..9.016 rows=10.00 loops=1)
+         Workers Planned: 1
+         Workers Launched: 1
+         Buffers: shared hit=1482
+         ->  Sort  (cost=2943.01..2943.16 rows=59 width=20) (actual time=5.224..5.224 rows=7.50 loops=2)
+               Sort Key: attempts.attempted_at DESC
+               Sort Method: top-N heapsort  Memory: 26kB
+               Buffers: shared hit=1479
+               Worker 0:  Sort Method: top-N heapsort  Memory: 26kB
+               ->  Parallel Seq Scan on attempts  (cost=0.00..2941.74 rows=59 width=20) (actual time=0.036..5.201 rows=50.00 loops=2)
+                     Filter: (player_id = (InitPlan 1).col1)
+                     Rows Removed by Filter: 99960
+                     Buffers: shared hit=1471
+ Planning Time: 0.071 ms
+ Execution Time: 9.035 ms
+(22 rows)
+
+CREATE INDEX idx_attempts_player_time ON attempts (player_id, attempted_at DESC);
+CREATE INDEX
+ANALYZE attempts;
+ANALYZE
+SELECT attempt_id, book_id, score, attempted_at
+FROM attempts
+WHERE player_id = (SELECT player_id FROM players WHERE username = 'bulk_1000')
+ORDER BY attempted_at DESC
+LIMIT 10;
+EXPLAIN ANALYZE
+SELECT attempt_id, book_id, score, attempted_at
+FROM attempts
+WHERE player_id = (SELECT player_id FROM players WHERE username = 'bulk_1000')
+ORDER BY attempted_at DESC
+LIMIT 10;
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=8.71..48.08 rows=10 width=20) (actual time=0.012..0.017 rows=10.00 loops=1)
+   Buffers: shared hit=16
+   InitPlan 1
+     ->  Index Scan using players_username_key on players  (cost=0.27..8.29 rows=1 width=4) (actual time=0.007..0.008 rows=1.00 loops=1)
+           Index Cond: ((username)::text = 'bulk_1000'::text)
+           Index Searches: 1
+           Buffers: shared hit=3
+   ->  Index Scan using idx_attempts_player_time on attempts  (cost=0.42..394.15 rows=100 width=20) (actual time=0.012..0.016 rows=10.00 loops=1)
+         Index Cond: (player_id = (InitPlan 1).col1)
+         Index Searches: 1
+         Buffers: shared hit=16
+ Planning Time: 0.050 ms
+ Execution Time: 0.025 ms
+(13 rows)
+
+SELECT pg_size_pretty(pg_relation_size('idx_attempts_player_time')) AS index_size,
+       pg_size_pretty(pg_relation_size('attempts'))                 AS table_size;
+ index_size | table_size 
+------------+------------
+ 6184 kB    | 11 MB
+(1 row)
+
+DELETE FROM players WHERE username LIKE 'bulk\_%';
+DELETE 2000
+SELECT count(*) AS attempts_after_cleanup FROM attempts;
+ attempts_after_cleanup 
+------------------------
+                     20
+(1 row)
+

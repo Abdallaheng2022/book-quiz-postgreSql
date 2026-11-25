@@ -1,0 +1,65 @@
+BEGIN;
+BEGIN
+INSERT INTO books (title, author, genre)
+VALUES ('Brave New World', 'Aldous Huxley', 'Novel');
+INSERT 0 1
+INSERT INTO questions (book_id, question_text, correct_answer, difficulty)
+SELECT book_id, q.text, q.answer, q.level
+FROM books,
+     (VALUES ('What drug keeps citizens happy?', 'Soma', 'easy'),
+             ('What is the name of the "Savage"?', 'John', 'medium')) AS q(text, answer, level)
+WHERE title = 'Brave New World' AND author = 'Aldous Huxley';
+INSERT 0 2
+COMMIT;
+COMMIT
+SELECT b.title, count(q.question_id) AS questions
+FROM books b JOIN questions q ON q.book_id = b.book_id
+WHERE b.title = 'Brave New World'
+GROUP BY b.title;
+      title      | questions 
+-----------------+-----------
+ Brave New World |         2
+(1 row)
+
+BEGIN;
+BEGIN
+INSERT INTO books (title, author, genre)
+VALUES ('Fahrenheit 451', 'Ray Bradbury', 'Novel');
+INSERT 0 1
+INSERT INTO questions (book_id, question_text, correct_answer, difficulty)
+SELECT book_id, 'At what temperature does paper burn?', '451 °F', 'super-hard'
+FROM books WHERE title = 'Fahrenheit 451';
+psql:08_transaction.sql:59: ERROR:  new row for relation "questions" violates check constraint "questions_difficulty_check"
+DETAIL:  Failing row contains (26, 18, At what temperature does paper burn?, 451 °F, super-hard, ai).
+ROLLBACK;
+ROLLBACK
+SELECT count(*) AS fahrenheit_rows FROM books WHERE title = 'Fahrenheit 451';
+ fahrenheit_rows 
+-----------------
+               0
+(1 row)
+
+SELECT count(*) AS ahmed_attempts_before FROM attempts WHERE player_id = 1;
+ ahmed_attempts_before 
+-----------------------
+                     4
+(1 row)
+
+BEGIN;
+BEGIN
+DELETE FROM attempts WHERE player_id = 1;
+DELETE 4
+SELECT count(*) AS ahmed_attempts_inside FROM attempts WHERE player_id = 1;
+ ahmed_attempts_inside 
+-----------------------
+                     0
+(1 row)
+
+ROLLBACK;
+ROLLBACK
+SELECT count(*) AS ahmed_attempts_after FROM attempts WHERE player_id = 1;
+ ahmed_attempts_after 
+----------------------
+                    4
+(1 row)
+

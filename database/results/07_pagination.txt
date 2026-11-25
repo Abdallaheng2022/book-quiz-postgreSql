@@ -1,0 +1,45 @@
+SELECT count(*) AS total_books,
+       ceil(count(*) / 5.0) AS total_pages
+FROM books;
+ total_books | total_pages 
+-------------+-------------
+          12 |           3
+(1 row)
+
+SELECT book_id, title FROM books ORDER BY book_id LIMIT 5 OFFSET 0;
+ book_id |          title           
+---------+--------------------------
+       1 | Clean Code
+       2 | The Pragmatic Programmer
+       3 | مقدمة ابن خلدون
+       4 | Atomic Habits
+       5 | Dune
+(5 rows)
+
+SELECT book_id, title FROM books ORDER BY book_id LIMIT 5 OFFSET 5;
+ book_id |                 title                 
+---------+---------------------------------------
+       6 | 1984
+       7 | الأيام
+       8 | Sapiens
+       9 | Rich Dad Poor Dad
+      10 | Designing Data-Intensive Applications
+(5 rows)
+
+SELECT book_id, title FROM books ORDER BY book_id LIMIT 5 OFFSET 10;
+ book_id |     title     
+---------+---------------
+      11 | رجال في الشمس
+      12 | Deep Work
+(2 rows)
+
+SELECT book_id, title FROM books WHERE book_id > 5 ORDER BY book_id LIMIT 5;
+ book_id |                 title                 
+---------+---------------------------------------
+       6 | 1984
+       7 | الأيام
+       8 | Sapiens
+       9 | Rich Dad Poor Dad
+      10 | Designing Data-Intensive Applications
+(5 rows)
+

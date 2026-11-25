@@ -1,0 +1,48 @@
+SELECT p.username,
+       count(*)                                               AS attempts,
+       sum(a.score)                                           AS correct_answers,
+       sum(a.total_questions)                                 AS questions_asked,
+       round(100.0 * sum(a.score) / sum(a.total_questions), 1) AS accuracy_percent
+FROM attempts a
+JOIN players p ON p.player_id = a.player_id
+GROUP BY p.username
+ORDER BY accuracy_percent DESC, correct_answers DESC;
+   username   | attempts | correct_answers | questions_asked | accuracy_percent 
+--------------+----------+-----------------+-----------------+------------------
+ ahmed_reader |        4 |               8 |              10 |             80.0
+ yusuf99      |        4 |               7 |               9 |             77.8
+ sara_books   |        4 |               7 |               9 |             77.8
+ layla_quiz   |        4 |               6 |               8 |             75.0
+ omar_dev     |        4 |               5 |               7 |             71.4
+(5 rows)
+
+SELECT b.title,
+       count(*)                                               AS attempts,
+       count(DISTINCT a.player_id)                            AS players,
+       round(100.0 * sum(a.score) / sum(a.total_questions), 1) AS avg_percent
+FROM attempts a
+JOIN books b ON b.book_id = a.book_id
+GROUP BY b.title
+HAVING count(*) >= 2
+ORDER BY attempts DESC, avg_percent DESC;
+      title      | attempts | players | avg_percent 
+-----------------+----------+---------+-------------
+ Dune            |        4 |       4 |        66.7
+ Clean Code      |        3 |       2 |        83.3
+ 1984            |        2 |       2 |        83.3
+ الأيام          |        2 |       2 |        75.0
+ رجال في الشمس   |        2 |       2 |        75.0
+ مقدمة ابن خلدون |        2 |       2 |        75.0
+(6 rows)
+
+SELECT difficulty, count(*) AS questions
+FROM questions
+GROUP BY difficulty
+ORDER BY questions DESC;
+ difficulty | questions 
+------------+-----------
+ medium     |        10
+ easy       |         9
+ hard       |         2
+(3 rows)
+

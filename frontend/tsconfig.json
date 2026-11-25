@@ -1,0 +1,27 @@
+{
+  // EN: TypeScript settings for the browser app.
+  // AR: إعدادات TypeScript لتطبيق المتصفح.
+  "compilerOptions": {
+    // EN: Modern JavaScript for modern browsers.
+    // AR: JavaScript حديثة للمتصفحات الحديثة.
+    "target": "ES2022",
+    // EN: Types for browser APIs (document, fetch...).
+    // AR: أنواع واجهات المتصفح (document و fetch...).
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    // EN: Let Vite (the "bundler") resolve imports.
+    // AR: نترك Vite (أداة التجميع) تبحث عن الملفات المستوردة.
+    "moduleResolution": "Bundler",
+    // EN: Understand JSX (<div>...</div>) using React's new transform.
+    // AR: فهم JSX (أي ‎<div>...</div>‎) باستخدام تحويل React الجديد.
+    "jsx": "react-jsx",
+    // EN: Catch more mistakes.
+    // AR: اكتشاف أخطاء أكثر.
+    "strict": true,
+    // EN: Vite does the build; TypeScript only checks types.
+    // AR: Vite يبني؛ و TypeScript يفحص الأنواع فقط.
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "vite.config.ts"]
+}

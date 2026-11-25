@@ -1,0 +1,40 @@
+{
+  // EN: TypeScript compiler settings (this file allows comments).
+  // AR: إعدادات مترجم TypeScript (هذا الملف يسمح بكتابة التعليقات).
+  "compilerOptions": {
+    // EN: Generate modern JavaScript (ES2022) that Node.js 20+ understands.
+    // AR: إنتاج JavaScript حديثة (ES2022) يفهمها Node.js الإصدار 20 فما فوق.
+    "target": "ES2022",
+
+    // EN: Use the Node.js ESM module system (import/export).
+    // AR: استخدام نظام الوحدات ESM الخاص بـ Node.js (أي import/export).
+    "module": "NodeNext",
+
+    // EN: Resolve imports the same way Node.js does.
+    // AR: البحث عن الملفات المستوردة بنفس طريقة Node.js.
+    "moduleResolution": "NodeNext",
+
+    // EN: Strict mode = TypeScript catches more mistakes for us.
+    // AR: الوضع الصارم = TypeScript يكتشف أخطاء أكثر نيابةً عنا.
+    "strict": true,
+
+    // EN: Our TypeScript source code lives in src/.
+    // AR: كود TypeScript الأصلي موجود في مجلد src.
+    "rootDir": "src",
+
+    // EN: Compiled JavaScript goes to dist/.
+    // AR: كود JavaScript الناتج يُوضع في مجلد dist.
+    "outDir": "dist",
+
+    // EN: Allow importing CommonJS packages with default import syntax.
+    // AR: السماح باستيراد الحزم القديمة (CommonJS) بطريقة import العادية.
+    "esModuleInterop": true,
+
+    // EN: Skip checking type files of libraries (faster builds).
+    // AR: تخطي فحص ملفات الأنواع الخاصة بالمكتبات (بناء أسرع).
+    "skipLibCheck": true
+  },
+  // EN: Only compile files inside src/.
+  // AR: ترجمة الملفات الموجودة داخل src فقط.
+  "include": ["src"]
+}

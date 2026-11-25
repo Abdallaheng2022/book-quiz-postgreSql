@@ -1,0 +1,40 @@
+INSERT INTO books (book_id, title, author, genre) VALUES (1, 'Copy', 'X', 'Y');
+psql:03_constraints_test.sql:11: ERROR:  cannot insert a non-DEFAULT value into column "book_id"
+DETAIL:  Column "book_id" is an identity column defined as GENERATED ALWAYS.
+HINT:  Use OVERRIDING SYSTEM VALUE to override.
+INSERT INTO books (title, author, genre) VALUES ('Dune', 'Frank Herbert', 'Novel');
+psql:03_constraints_test.sql:15: ERROR:  duplicate key value violates unique constraint "books_title_author_unique"
+DETAIL:  Key (title, author)=(Dune, Frank Herbert) already exists.
+INSERT INTO books (title, author, genre) VALUES ('   ', 'X', 'Y');
+psql:03_constraints_test.sql:19: ERROR:  new row for relation "books" violates check constraint "books_title_check"
+DETAIL:  Failing row contains (14,    , X, Y, t, 2026-11-25 16:20:08.330273+03).
+INSERT INTO books (title, genre) VALUES ('No Author', 'Y');
+psql:03_constraints_test.sql:23: ERROR:  null value in column "author" of relation "books" violates not-null constraint
+DETAIL:  Failing row contains (15, No Author, null, Y, t, 2026-11-25 16:20:08.331075+03).
+INSERT INTO players (username, email) VALUES ('sara_books', 'other@example.com');
+psql:03_constraints_test.sql:27: ERROR:  duplicate key value violates unique constraint "players_username_key"
+DETAIL:  Key (username)=(sara_books) already exists.
+INSERT INTO players (username, email) VALUES ('new_player', 'not-an-email');
+psql:03_constraints_test.sql:31: ERROR:  new row for relation "players" violates check constraint "players_email_check"
+DETAIL:  Failing row contains (8, new_player, not-an-email, 2026-11-25 16:20:08.333208+03).
+INSERT INTO questions (book_id, question_text, correct_answer) VALUES (999, 'Q?', 'A');
+psql:03_constraints_test.sql:35: ERROR:  insert or update on table "questions" violates foreign key constraint "questions_book_id_fkey"
+DETAIL:  Key (book_id)=(999) is not present in table "books".
+INSERT INTO questions (book_id, question_text, correct_answer, difficulty) VALUES (1, 'Q?', 'A', 'super-hard');
+psql:03_constraints_test.sql:39: ERROR:  new row for relation "questions" violates check constraint "questions_difficulty_check"
+DETAIL:  Failing row contains (23, 1, Q?, A, super-hard, ai).
+INSERT INTO attempts (player_id, book_id, total_questions, score) VALUES (1, 1, 2, 5);
+psql:03_constraints_test.sql:43: ERROR:  new row for relation "attempts" violates check constraint "attempts_score_not_above_total"
+DETAIL:  Failing row contains (21, 1, 1, 2, 5, 2026-11-25 16:20:08.338475+03).
+DELETE FROM books WHERE book_id = 5;
+psql:03_constraints_test.sql:47: ERROR:  update or delete on table "books" violates RESTRICT setting of foreign key constraint "attempts_book_id_fkey" on table "attempts"
+DETAIL:  Key (book_id)=(5) is referenced from table "attempts".
+SELECT (SELECT count(*) FROM books)     AS books,
+       (SELECT count(*) FROM players)   AS players,
+       (SELECT count(*) FROM questions) AS questions,
+       (SELECT count(*) FROM attempts)  AS attempts;
+ books | players | questions | attempts 
+-------+---------+-----------+----------
+    12 |       6 |        21 |       20
+(1 row)
+

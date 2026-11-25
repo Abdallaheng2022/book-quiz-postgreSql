@@ -1,0 +1,52 @@
+SELECT a.attempt_id,
+       p.username,
+       b.title,
+       a.score || '/' || a.total_questions               AS score,
+       round(100.0 * a.score / a.total_questions)         AS percent,
+       to_char(a.attempted_at AT TIME ZONE 'Europe/Istanbul', 'YYYY-MM-DD HH24:MI') AS attempted_at
+FROM attempts a                                    -- EN: "a" is a short alias | AR: "a" اسم مختصر
+JOIN players  p ON p.player_id = a.player_id       -- EN: FK attempts → players
+JOIN books    b ON b.book_id   = a.book_id         -- EN: FK attempts → books
+ORDER BY a.attempted_at DESC
+LIMIT 5;
+ attempt_id |  username  |       title       | score | percent |   attempted_at   
+------------+------------+-------------------+-------+---------+------------------
+         20 | yusuf99    | Dune              | 2/3   |      67 | 2026-11-15 20:30
+         19 | yusuf99    | رجال في الشمس     | 2/2   |     100 | 2026-11-14 11:00
+         16 | layla_quiz | Rich Dad Poor Dad | 1/1   |     100 | 2026-11-13 12:30
+          8 | sara_books | رجال في الشمس     | 1/2   |      50 | 2026-11-12 22:00
+         15 | layla_quiz | Sapiens           | 1/1   |     100 | 2026-11-11 12:00
+(5 rows)
+
+SELECT b.book_id,
+       b.title,
+       count(q.question_id) AS questions     -- EN: counts only real matches | AR: يعدّ التطابقات الحقيقية فقط
+FROM books b
+LEFT JOIN questions q ON q.book_id = b.book_id
+GROUP BY b.book_id, b.title
+ORDER BY b.book_id;
+ book_id |                 title                 | questions 
+---------+---------------------------------------+-----------
+       1 | Clean Code                            |         2
+       2 | The Pragmatic Programmer              |         2
+       3 | مقدمة ابن خلدون                       |         2
+       4 | Atomic Habits                         |         2
+       5 | Dune                                  |         3
+       6 | 1984                                  |         3
+       7 | الأيام                                |         2
+       8 | Sapiens                               |         1
+       9 | Rich Dad Poor Dad                     |         1
+      10 | Designing Data-Intensive Applications |         1
+      11 | رجال في الشمس                         |         2
+      12 | Deep Work                             |         0
+(12 rows)
+
+SELECT p.player_id, p.username
+FROM players p
+LEFT JOIN attempts a ON a.player_id = p.player_id
+WHERE a.attempt_id IS NULL;
+ player_id | username 
+-----------+----------
+         6 | mona_k
+(1 row)
+

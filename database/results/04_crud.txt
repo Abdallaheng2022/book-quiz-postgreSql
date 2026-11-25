@@ -1,0 +1,54 @@
+INSERT INTO books (title, author, genre)
+VALUES ('The Alchemist', 'Paulo Coelho', 'Novel')
+RETURNING book_id, title, author, genre, available;
+ book_id |     title     |    author    | genre | available 
+---------+---------------+--------------+-------+-----------
+      16 | The Alchemist | Paulo Coelho | Novel | t
+(1 row)
+
+INSERT 0 1
+SELECT book_id, title, author
+FROM books
+WHERE genre = 'Novel'
+ORDER BY title;
+ book_id |     title     |    author     
+---------+---------------+---------------
+       6 | 1984          | George Orwell
+       5 | Dune          | Frank Herbert
+      16 | The Alchemist | Paulo Coelho
+      11 | رجال في الشمس | غسان كنفاني
+(4 rows)
+
+SELECT book_id, title, author, genre, available
+FROM books
+WHERE title = 'The Alchemist';
+ book_id |     title     |    author    | genre | available 
+---------+---------------+--------------+-------+-----------
+      16 | The Alchemist | Paulo Coelho | Novel | t
+(1 row)
+
+UPDATE books
+SET genre = 'Fiction', available = FALSE
+WHERE title = 'The Alchemist'
+RETURNING book_id, title, genre, available;
+ book_id |     title     |  genre  | available 
+---------+---------------+---------+-----------
+      16 | The Alchemist | Fiction | f
+(1 row)
+
+UPDATE 1
+DELETE FROM books
+WHERE title = 'The Alchemist'
+RETURNING book_id, title;
+ book_id |     title     
+---------+---------------
+      16 | The Alchemist
+(1 row)
+
+DELETE 1
+SELECT count(*) AS alchemist_rows FROM books WHERE title = 'The Alchemist';
+ alchemist_rows 
+----------------
+              0
+(1 row)
+
