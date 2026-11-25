@@ -97,4 +97,3 @@ Cost: the index takes 6 MB and slightly slows down inserts. That's worth it, bec
 Built with **Claude (Anthropic)**: table design, schema, sample data and all queries. Every file was run on PostgreSQL 16 and the output checked (`TEST_RESULTS.md`).
 Fixed after review: the first "before" timing (401 ms) was mostly one-time warm-up, so each `EXPLAIN ANALYZE` now runs after an unmeasured warm-up query. `09_index.sql` was also made safe to re-run.
 
-> ✍️ Add your own notes: the prompts you used and what you changed by hand.
